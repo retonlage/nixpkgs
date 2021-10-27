@@ -153,6 +153,12 @@ with pkgs;
 
   appindicator-sharp = callPackage ../development/libraries/appindicator-sharp { };
 
+  canonicalize-jar = callPackage ../build-support/java/canonicalize-jar.nix { };
+  canonicalize-jars-hook = makeSetupHook {
+    name = "canonicalize-jars-hook";
+    substitutions = { canonicalize_jar = canonicalize-jar; };
+  } ../build-support/setup-hooks/canonicalize-jars.sh;
+
   ensureNewerSourcesHook = { year }: makeSetupHook {}
     (writeScript "ensure-newer-sources-hook.sh" ''
       postUnpackHooks+=(_ensureNewerSources)
@@ -5335,6 +5341,8 @@ with pkgs;
 
   uni2ascii = callPackage ../tools/text/uni2ascii { };
 
+  uniscribe = callPackage ../tools/text/uniscribe { };
+
   galculator = callPackage ../applications/misc/galculator {
     gtk = gtk3;
   };
@@ -7778,7 +7786,7 @@ with pkgs;
   grocy = callPackage ../servers/grocy { };
 
   inherit (callPackage ../servers/nextcloud {})
-    nextcloud19 nextcloud20 nextcloud21 nextcloud22;
+    nextcloud20 nextcloud21 nextcloud22;
 
   nextcloud-client = libsForQt5.callPackage ../applications/networking/nextcloud-client { };
 
@@ -18579,9 +18587,7 @@ with pkgs;
 
   notify-sharp = callPackage ../development/libraries/notify-sharp { };
 
-  notcurses = callPackage ../development/libraries/notcurses {
-    readline = readline81;
-  };
+  notcurses = callPackage ../development/libraries/notcurses { };
 
   ncurses5 = ncurses.override {
     abiVersion = "5";
@@ -19566,10 +19572,7 @@ with pkgs;
 
   dqlite = callPackage ../development/libraries/dqlite { };
 
-  sqlcipher = lowPrio (callPackage ../development/libraries/sqlcipher {
-    readline = null;
-    ncurses = null;
-  });
+  sqlcipher = callPackage ../development/libraries/sqlcipher { };
 
   standardnotes = callPackage ../applications/editors/standardnotes { };
 
@@ -20157,10 +20160,6 @@ with pkgs;
   jdom = callPackage ../development/libraries/java/jdom { };
 
   jflex = callPackage ../development/libraries/java/jflex { };
-
-  junit = callPackage ../development/libraries/java/junit { antBuild = releaseTools.antBuild; };
-
-  junixsocket = callPackage ../development/libraries/java/junixsocket { };
 
   lombok = callPackage ../development/libraries/java/lombok { };
 
@@ -24774,6 +24773,9 @@ with pkgs;
         gr-blocktool = false;
         sphinx = false;
         doxygen = false;
+        # Doesn't make it reference python eventually, but makes reverse
+        # depdendencies require python to use cmake files of GR.
+        gr-ctrlport = false;
       };
     };
   };
@@ -24802,6 +24804,9 @@ with pkgs;
         gr-modtool = false;
         sphinx = false;
         doxygen = false;
+        # Doesn't make it reference python eventually, but makes reverse
+        # depdendencies require python to use cmake files of GR.
+        gr-ctrlport = false;
       };
     };
   };
@@ -26377,6 +26382,10 @@ with pkgs;
   mcpp = callPackage ../development/compilers/mcpp { };
 
   mda_lv2 = callPackage ../applications/audio/mda-lv2 { };
+
+  mdzk = callPackage ../applications/misc/mdzk {
+    inherit (darwin.apple_sdk.frameworks) CoreServices;
+  };
 
   mediaelch = libsForQt5.callPackage ../applications/misc/mediaelch { };
 
@@ -32678,6 +32687,8 @@ with pkgs;
     thrift = thrift-0_10;
   };
 
+  seafile-server = callPackage ../servers/seafile-server { };
+
   seafile-shared = callPackage ../misc/seafile-shared { };
 
   ser2net = callPackage ../servers/ser2net {};
@@ -32846,7 +32857,7 @@ with pkgs;
 
   vault-bin = callPackage ../tools/security/vault/vault-bin.nix { };
 
-  vaultenv = haskellPackages.vaultenv;
+  vaultenv = haskell.lib.justStaticExecutables haskellPackages.vaultenv;
 
   vazir-code-font = callPackage ../data/fonts/vazir-code-font { };
 
