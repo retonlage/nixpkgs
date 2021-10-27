@@ -15793,6 +15793,8 @@ with pkgs;
 
   cppdb = callPackage ../development/libraries/cppdb { };
 
+  cpprestsdk = callPackage ../development/libraries/cpprestsdk {};
+
   cpp-utilities = callPackage ../development/libraries/cpp-utilities { };
 
   cpp-hocon = callPackage ../development/libraries/cpp-hocon { };
